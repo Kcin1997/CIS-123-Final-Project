@@ -24,6 +24,11 @@ Cancel BYTE "5. Cancel", 0dh, 0ah, 0
 ;------------------------------------------------------------
 MainMenu PROC
 ;------------------------------------------------------------
+; Prints all text needed for the Main Menu
+; 
+; Register Safe
+; Return: none
+;------------------------------------------------------------
 	pusha
 	call	Clrscr
 	mov		edx, OFFSET SelectAdd		;StringAdd used for output
@@ -39,7 +44,14 @@ MainMenu PROC
 	ret
 MainMenu ENDP
 
+;--------------------------------------------------------------
 ShowingsMenu PROC
+;--------------------------------------------------------------
+; Prints all avalable showings
+; 
+; Register Safe
+; Return: none
+;--------------------------------------------------------------
 	pusha
 	mov		edx, OFFSET Select1			;String1 used for output
 	call	WriteString					;Writes the String1 to output

@@ -159,8 +159,6 @@ main PROC
 			call	WaitMsg
 			jmp		L1
 		L8:
-		call	Clrscr
-
 		sub		al, '0'
 		cbw
 		cmp		eax, 4
@@ -172,10 +170,10 @@ main PROC
 
 		cmp		cl, '1'
 		jne		L9
-			invoke	MakeReservation, RowGapValue, MovieGapValue, ADDR SelectInvalid
+			INVOKE	MakeReservation, RowGapValue, MovieGapValue, ADDR SelectInvalid
 			jmp		L10
 		L9:
-			invoke	RemoveReservation, RowGapValue, MovieGapValue, ADDR SelectInvalid
+			INVOKE	RemoveReservation, RowGapValue, MovieGapValue, ADDR SelectInvalid
 		L10:
 		call	WaitMsg
 	jmp L1
@@ -244,8 +242,9 @@ SelectMovie2Time2 PROC
 SelectMovie2Time2 ENDP
 
 CancelSelection PROC
-    mov edx,OFFSET SelectCancel			;StringGoodbye used for output
+    mov edx,OFFSET SelectCancel		;StringGoodbye used for output
     call WriteString				;Writes the StringGoodbye to output
+	call WaitMsg
     ret								;returns to main procedure
 CancelSelection ENDP
 

@@ -21,6 +21,8 @@ MainMenu PROTO
 
 ShowingsMenu PROTO
 
+SelectAdd PROTO
+
 .data
 ;--------------------------------------------------------------------------------------
 ;Strings for reservation making and clarification.

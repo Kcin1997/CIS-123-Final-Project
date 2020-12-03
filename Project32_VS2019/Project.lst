@@ -1,8 +1,17 @@
-Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 13:51:37
-_Menu.asm						     Page 1 - 1
+Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 14:26:21
+Team1_Final_Reservations.asm				     Page 1 - 1
 
 
-				; Main Menu (_Menu.asm)
+				; Team 1: Aaron Latanzi, Jason Vergara, Nicholas Lopez
+				; Class: CIS123 Assembly Language
+				; File Name: Team1_Final_Reservations.asm
+				; Creation Date: 11/6/2020
+				; Program Description:	This program is implementing the reservation
+				;						part of our planned program for the final.
+				;						This program has 106 (minus 16 test lines of
+				;						lines of code = 90 lines) of code. Will
+				;						have more in final version when all parts
+				;						are merged.
 
 				INCLUDE Team1Final.inc
 			      C ; Include File for Team1_Final_Reservations.asm
@@ -44,6 +53,8 @@ _Menu.asm						     Page 1 - 1
 			      C MainMenu PROTO
 			      C 
 			      C ShowingsMenu PROTO
+			      C 
+			      C SelectAdd PROTO
 			      C 
  00000000		      C .data
 			      C ;--------------------------------------------------------------------------------------
@@ -136,99 +147,437 @@ _Menu.asm						     Page 1 - 1
 	   6F 6E 2E 0D 0A
 	   00
 			      C 
-
+					
  0000019B			.data
-				;------------------------------------------------
-				; Main Menu Strings
-				;------------------------------------------------
- 0000019B 31 2E 20 4D 61	SelectAdd BYTE "1. Make Reservation", 0dh, 0ah, 0
-	   6B 65 20 52 65
-	   73 65 72 76 61
-	   74 69 6F 6E 0D
-	   0A 00
- 000001B1 32 2E 20 52 65	SelectRem BYTE "2. Remove Reservation", 0dh, 0ah, 0
-	   6D 6F 76 65 20
-	   52 65 73 65 72
-	   76 61 74 69 6F
-	   6E 0D 0A 00
- 000001C9 33 2E 20 45 78	SelectDone BYTE "3. Exit Program", 0dh, 0ah, 0
-	   69 74 20 50 72
-	   6F 67 72 61 6D
-	   0D 0A 00
- 000001DB 53 65 6C 65 63	StringAddOrRem BYTE "Select an option: ", 0
-	   74 20 61 6E 20
-	   6F 70 74 69 6F
-	   6E 3A 20 00
+				;--------------------------------------------------------------------------------------
+				;Table for options to make or remove reservation
+				;--------------------------------------------------------------------------------------
+ 0000019B 31			OptionTable1 BYTE '1'                            
+ 0000019C  0000010F R		            DWORD SelAdd                      
+ 000001A0 = 00000005		EntrySize1 = ($ - OptionTable1)                   
+ 000001A0  32			            BYTE '2'                            
+ 000001A1  00000124 R		            DWORD SelRem     
+ 000001A5 = 00000002		CountEntries1 = ($ - OptionTable1) / EntrySize1 
+				;--------------------------------------------------------------------------------------
+				;Table for options 1-5 for user input
+				;--------------------------------------------------------------------------------------
+ 000001A5 31			OptionTable2 BYTE '1'                            
+ 000001A6  00000139 R		            DWORD SelectMovie1Time1                        
+ 000001AA = 00000005		EntrySize2 = ($ - OptionTable2)                   
+ 000001AA  32			            BYTE '2'                            
+ 000001AB  00000144 R		            DWORD SelectMovie1Time2                         
+ 000001AF  33			            BYTE '3'                            
+ 000001B0  0000014F R		            DWORD SelectMovie2Time1                        
+ 000001B4  34			            BYTE '4'                            
+ 000001B5  0000015A R		            DWORD SelectMovie2Time2                        
+ 000001B9  35						BYTE '5'                                            
+ 000001BA  00000165 R		            DWORD CancelSelection                       
+ 000001BE = 00000005		CountEntries2 = ($ - OptionTable2) / EntrySize2    
 
-				;------------------------------------------------------------
-				; Showings Menu Strings
-				;------------------------------------------------------------
- 000001EE 31 2E 20 4D 6F	Select1 BYTE "1. Movie 1. Time: 2:15PM", 0dh, 0ah, 0
+				;--------------------------------------------------------------------------------------
+				;String values displayed for the user menu
+				;--------------------------------------------------------------------------------------
+ 000001BE 31 2E 20 4D 6F	Select1 BYTE "1. Movie 1. Time: 2:15PM", 0dh, 0ah, 0
 	   76 69 65 20 31
 	   2E 20 54 69 6D
 	   65 3A 20 32 3A
 	   31 35 50 4D 0D
 	   0A 00
- 00000209 32 2E 20 4D 6F	Select2 BYTE "2. Movie 1. Time: 6:30PM", 0dh, 0ah, 0
+ 000001D9 32 2E 20 4D 6F	Select2 BYTE "2. Movie 1. Time: 6:30PM", 0dh, 0ah, 0
 	   76 69 65 20 31
 	   2E 20 54 69 6D
 	   65 3A 20 36 3A
 	   33 30 50 4D 0D
 	   0A 00
- 00000224 33 2E 20 4D 6F	Select3 BYTE "3. Movie 2. Time: 2:15PM", 0dh, 0ah, 0
+ 000001F4 33 2E 20 4D 6F	Select3 BYTE "3. Movie 2. Time: 2:15PM", 0dh, 0ah, 0
 	   76 69 65 20 32
 	   2E 20 54 69 6D
 	   65 3A 20 32 3A
 	   31 35 50 4D 0D
 	   0A 00
- 0000023F 34 2E 20 4D 6F	Select4 BYTE "4. Movie 2. Time: 6:30PM", 0dh, 0ah, 0
+ 0000020F 34 2E 20 4D 6F	Select4 BYTE "4. Movie 2. Time: 6:30PM", 0dh, 0ah, 0
 	   76 69 65 20 32
 	   2E 20 54 69 6D
 	   65 3A 20 36 3A
 	   33 30 50 4D 0D
 	   0A 00
- 0000025A 35 2E 20 43 61	Cancel BYTE "5. Cancel", 0dh, 0ah, 0
+ 0000022A 35 2E 20 43 61	Select5 BYTE "5. Cancel", 0dh, 0ah, 0
 	   6E 63 65 6C 0D
 	   0A 00
+ 00000236 53 65 6C 65 63	StringChoice1 BYTE "Select a movie and time option: ", 0
+	   74 20 61 20 6D
+	   6F 76 69 65 20
+	   61 6E 64 20 74
+	   69 6D 65 20 6F
+	   70 74 69 6F 6E
+	   3A 20 00
+
+ 00000257 4D 61 6B 65 20	StringAdd BYTE "Make Reservation Selected", 0dh, 0ah, 0
+	   52 65 73 65 72
+	   76 61 74 69 6F
+	   6E 20 53 65 6C
+	   65 63 74 65 64
+	   0D 0A 00
+ 00000273 52 65 6D 6F 76	StringRem BYTE "Remove Reservation Selected", 0dh, 0ah, 0
+	   65 20 52 65 73
+	   65 72 76 61 74
+	   69 6F 6E 20 53
+	   65 6C 65 63 74
+	   65 64 0D 0A 00
+				;--------------------------------------------------------------------------------------
+				;Strings displayed after selection made
+				;--------------------------------------------------------------------------------------
+ 00000291 4D 6F 76 69 65	String1 BYTE "Movie 1 at 2:15PM selected", 0dh, 0ah, 0
+	   20 31 20 61 74
+	   20 32 3A 31 35
+	   50 4D 20 73 65
+	   6C 65 63 74 65
+	   64 0D 0A 00
+ 000002AE 4D 6F 76 69 65	String2 BYTE "Movie 1 at 6:30PM selected", 0dh, 0ah, 0
+	   20 31 20 61 74
+	   20 36 3A 33 30
+	   50 4D 20 73 65
+	   6C 65 63 74 65
+	   64 0D 0A 00
+ 000002CB 4D 6F 76 69 65	String3 BYTE "Movie 2 at 2:15PM selected", 0dh, 0ah, 0
+	   20 32 20 61 74
+	   20 32 3A 31 35
+	   50 4D 20 73 65
+	   6C 65 63 74 65
+	   64 0D 0A 00
+ 000002E8 4D 6F 76 69 65	String4	BYTE "Movie 2 at 6:30PM selected", 0dh, 0ah, 0
+	   20 32 20 61 74
+	   20 36 3A 33 30
+	   50 4D 20 73 65
+	   6C 65 63 74 65
+	   64 0D 0A 00
+ 00000305 53 65 6C 65 63	SelectCancel	BYTE "Selection cancelled", 0dh, 0ah, 0
+	   74 69 6F 6E 20
+	   63 61 6E 63 65
+	   6C 6C 65 64 0D
+	   0A 00
+ 0000031B 49 6E 76 61 6C	SelectInvalid BYTE "Invalid selection", 0dh, 0ah, 0
+	   69 64 20 73 65
+	   6C 65 63 74 69
+	   6F 6E 0D 0A 00
+					
+				;--------------------------------------------------------------------------------------
+				;3d array for reservations.
+				;--------------------------------------------------------------------------------------
+ 0000032F  0000000A [		reservationsTable	BYTE 10 DUP(0)
+	    00
+	   ]
+ 00000339 = 0000000A		RowGapValue = ($ - reservationsTable)
+ 00000339  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 00000343  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 0000034D  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 00000357  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 00000361 = 00000032		MovieGapValue = ($ - reservationsTable)
+ 00000361  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 0000036B  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 00000375  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 0000037F  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 00000389  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 00000393  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 0000039D  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 000003A7  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 000003B1  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 000003BB  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 000003C5  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 000003CF  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 000003D9  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 000003E3  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+ 000003ED  0000000A [							BYTE 10 DUP(0)
+	    00
+	   ]
+
 
  00000000			.code
-				;------------------------------------------------------------
- 00000000			MainMenu PROC
-				;------------------------------------------------------------
- 00000000  60				pusha
- 00000001  E8 00000000 E		call	Clrscr
- 00000006  BA 0000019B R		mov		edx, OFFSET SelectAdd		;StringAdd used for output
- 0000000B  E8 00000000 E		call	WriteString					;Writes the StringAdd to output
- 00000010  BA 000001B1 R		mov		edx, OFFSET SelectRem		;StringRem used for output
- 00000015  E8 00000000 E		call	WriteString					;Writes the StringRem to output
- 0000001A  BA 000001C9 R		mov		edx, OFFSET SelectDone		;SelectDone used for output
- 0000001F  E8 00000000 E		call	WriteString					;Writes the SelectDone to output
+ 00000000			main PROC
+				;--------------------------------------------------------------------------------------
+				;Displays the menu choices and asks the user to select an option
+				;--------------------------------------------------------------------------------------
+ 00000000				L1:
+						INVOKE MainMenu
+ 00000000  E8 00000000 E   *	    call   MainMenu
 
- 00000024  BA 000001DB R		mov		edx, OFFSET StringAddOrRem	;StringAddOrRem used for output
- 00000029  E8 00000000 E		call	WriteString					;Writes the StringAddOrRem to output
- 0000002E  61				popa
- 0000002F  C3				ret
- 00000030			MainMenu ENDP
+ 00000005  E8 00000000 E			call	ReadChar					;Asks for user input
+ 0000000A  E8 00000000 E			call	WriteChar					;Display user input
+ 0000000F  E8 00000000 E			call	Crlf						;new line
+						
+ 00000014  2C 31				sub		al, '1'
+ 00000016  3C 03				cmp		al, 3
+ 00000018  72 11				jb		IS1
+ 0000001A  BA 0000031B R				mov		edx, OFFSET SelectInvalid
+ 0000001F  E8 00000000 E				call	WriteString
+ 00000024  E8 00000000 E				call	WaitMsg
+ 00000029  EB D5					jmp		L1
+ 0000002B					IS1:
+ 0000002B  04 31				add		al, '1'
 
- 00000030			ShowingsMenu PROC
- 00000030  60				pusha
- 00000031  BA 000001EE R		mov		edx, OFFSET Select1			;String1 used for output
- 00000036  E8 00000000 E		call	WriteString					;Writes the String1 to output
- 0000003B  BA 00000209 R		mov		edx, OFFSET Select2			;String2 used for output
- 00000040  E8 00000000 E		call	WriteString					;Writes the String2 to output
- 00000045  BA 00000224 R		mov		edx, OFFSET Select3			;String3 used for output
- 0000004A  E8 00000000 E		call	WriteString					;Writes the String3 to output
- 0000004F  BA 0000023F R		mov		edx, OFFSET Select4			;String4 used for output
- 00000054  E8 00000000 E		call	WriteString					;Writes the String4 to output
- 00000059  BA 0000025A R		mov		edx, OFFSET Cancel			;Cancel used for output
- 0000005E  E8 00000000 E		call	WriteString					;Writes SelectCancel to output
- 00000063  61				popa
- 00000064  C3				ret
- 00000065			ShowingsMenu ENDP
+ 0000002D  BE 0000019B R			mov		esi, OFFSET OptionTable1	;point esi to the table1 address
+ 00000032  B9 00000002				mov		ecx, CountEntries1			;
+ 00000037  E8 00000000 E			call	Crlf						;new line
 
-				END
-Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 13:51:37
-_Menu.asm						     Symbols 2 - 1
+ 0000003C					L2:
+ 0000003C  3A 06					cmp		al, [esi]
+ 0000003E  75 0C					jne		L3
+ 00000040  FF 56 01						call	NEAR PTR [esi + 1]
+ 00000043  53							push	ebx
+ 00000044  52							push	edx
+ 00000045  E8 00000000 E					call	Crlf
+ 0000004A  EB 08						jmp		L4
+ 0000004C						L3:
+ 0000004C  81 C6 00000005					add		esi, EntrySize1
+ 00000052  E2 E8					loop	L2
+ 00000054					L4:
+
+ 00000054  83 F9 00				cmp		ecx, 0
+ 00000057  0F 84 000000A6			je		L11
+ 0000005D  50					push	eax
+
+						INVOKE ShowingsMenu
+ 0000005E  E8 00000000 E   *	    call   ShowingsMenu
+
+ 00000063  BA 00000236 R			mov		edx, OFFSET StringChoice1	;StringChoice1 used for output
+ 00000068  E8 00000000 E			call	WriteString					;Writes the StringChoice1 to output
+ 0000006D  B8 00000000				mov		eax, 0
+ 00000072  E8 00000000 E			call	ReadChar					;Asks for user input
+ 00000077  E8 00000000 E			call	WriteChar					;Display user input
+ 0000007C  E8 00000000 E			call	Crlf						;new line
+
+ 00000081  BE 000001A5 R			mov		esi, OFFSET OptionTable2	;point esi to the table2 address
+ 00000086  B9 00000005				mov		ecx, CountEntries2			;count of table entries or loop counter
+
+ 0000008B					L5:
+ 0000008B  3A 06					cmp		al, [esi]					;compares characters in table to al
+ 0000008D  75 0A					jne		L6							;if not matched, continues loop
+ 0000008F  FF 56 01						call	NEAR PTR [esi+1]			;if matched, call the corresponding procedure
+ 00000092  E8 00000000 E					call	Crlf						;new line
+ 00000097  EB 08						jmp		L7							;jump to label 4
+ 00000099						L6:             
+ 00000099  81 C6 00000005					add esi, EntrySize2					;Go to the next entry in the table
+ 0000009F  E2 EA					loop L5									;repeats until ecx=0
+ 000000A1					L7:
+
+ 000000A1  83 F9 00				cmp		ecx, 0
+ 000000A4  75 14				jne		L8
+ 000000A6  BA 0000031B R				mov		edx, OFFSET SelectInvalid
+ 000000AB  E8 00000000 E				call	WriteString
+ 000000B0  E8 00000000 E				call	WaitMsg
+ 000000B5  E9 FFFFFF46					jmp		L1
+ 000000BA					L8:
+ 000000BA  2C 30				sub		al, '0'
+ 000000BC  66| 98				cbw
+ 000000BE  83 F8 04				cmp		eax, 4
+ 000000C1  0F 87 FFFFFF39			ja		L1
+
+ 000000C7  59					pop		ecx
+ 000000C8  5A					pop		edx
+ 000000C9  5B					pop		ebx
+
+ 000000CA  80 F9 31				cmp		cl, '1'
+ 000000CD  75 16				jne		L9
+							INVOKE	MakeReservation, RowGapValue, MovieGapValue, ADDR SelectInvalid
+ 000000CF  68 0000031B R   *	    push   OFFSET SelectInvalid
+ 000000D4  68 00000032	   *	    push   +000000032h
+ 000000D9  68 0000000A	   *	    push   +00000000Ah
+ 000000DE  E8 00000000 E   *	    call   MakeReservation
+ 000000E3  EB 14					jmp		L10
+ 000000E5					L9:
+							INVOKE	RemoveReservation, RowGapValue, MovieGapValue, ADDR SelectInvalid
+ 000000E5  68 0000031B R   *	    push   OFFSET SelectInvalid
+ 000000EA  68 00000032	   *	    push   +000000032h
+ 000000EF  68 0000000A	   *	    push   +00000000Ah
+ 000000F4  E8 00000000 E   *	    call   RemoveReservation
+ 000000F9					L10:
+ 000000F9  E8 00000000 E			call	WaitMsg
+ 000000FE  E9 FFFFFEFD			jmp L1
+					
+ 00000103				L11:
+ 00000103  E8 00000000 E	    call WaitMsg						;Waits until user presses a key
+					exit
+ 00000108  6A 00	   *	    push   +000000000h
+ 0000010A  E8 00000000 E   *	    call   ExitProcess
+ 0000010F			main ENDP
+
+				;---------------------------------------------------------------------
+ 0000010F			SelAdd PROC
+				;
+				; This procedure is what happens when the user selects the first
+				; choice in the first menu. Returns the makeRowPrompt offset and size.
+				; Receives:	Nothing
+				; Returns:	EBX = makeRowPrompt size.
+				;			EDX = makeRowPrompt offset.
+				;---------------------------------------------------------------------
+ 0000010F  BA 00000257 R	    mov		edx, OFFSET StringAdd		;StringAdd used for output
+ 00000114  E8 00000000 E	    call	WriteString					;Writes the StringAdd to output
+
+ 00000119  BB 00000045			mov		ebx, SIZEOF makeRowPrompt
+ 0000011E  BA 00000000 R		mov		edx, OFFSET makeRowPrompt
+ 00000123  C3			    ret									;returns to main procedure
+ 00000124			SelAdd ENDP
+
+				;---------------------------------------------------------------------
+ 00000124			SelRem PROC
+				;
+				; This procedure is what happens when the user selects the second
+				; choice in the first menu. Returns the removeRowPrompt offset and size.
+				; Receives:	Nothing
+				; Returns:	EBX = removeRowPrompt size.
+				;			EDX = removeRowPrompt offset.
+				;---------------------------------------------------------------------
+ 00000124  BA 00000273 R	    mov edx,OFFSET StringRem			;StringRem used for output
+ 00000129  E8 00000000 E	    call WriteString					;Writes the StringRem to output
+
+ 0000012E  BB 00000047			mov		ebx, SIZEOF removeRowPrompt
+ 00000133  BA 00000086 R		mov		edx, OFFSET removeRowPrompt
+ 00000138  C3			    ret									;returns to main procedure
+ 00000139			SelRem ENDP
+
+ 00000139			SelectMovie1Time1 PROC
+ 00000139  BA 00000291 R	    mov edx,OFFSET String1			;String1 used for output
+ 0000013E  E8 00000000 E	    call WriteString				;Writes the String1 to output
+ 00000143  C3			    ret								;returns to main procedure
+ 00000144			SelectMovie1Time1 ENDP
+
+ 00000144			SelectMovie1Time2 PROC
+ 00000144  BA 000002AE R	    mov edx,OFFSET String2			;String2 used for output
+ 00000149  E8 00000000 E	    call WriteString				;Writes the String2 to output
+ 0000014E  C3			    ret								;returns to main procedure
+ 0000014F			SelectMovie1Time2 ENDP
+
+ 0000014F			SelectMovie2Time1 PROC
+ 0000014F  BA 000002CB R	    mov edx,OFFSET String3			;String3 used for output
+ 00000154  E8 00000000 E	    call WriteString				;Writes the String3 to output
+ 00000159  C3			    ret								;returns to main procedure
+ 0000015A			SelectMovie2Time1 ENDP
+
+ 0000015A			SelectMovie2Time2 PROC
+ 0000015A  BA 000002E8 R	    mov edx,OFFSET String4			;String4 used for output
+ 0000015F  E8 00000000 E	    call WriteString				;Writes the String4 to output
+ 00000164  C3			    ret								;returns to main procedure
+ 00000165			SelectMovie2Time2 ENDP
+
+ 00000165			CancelSelection PROC
+ 00000165  BA 00000305 R	    mov edx,OFFSET SelectCancel		;StringGoodbye used for output
+ 0000016A  E8 00000000 E	    call WriteString				;Writes the StringGoodbye to output
+ 0000016F  E8 00000000 E		call WaitMsg
+ 00000174  C3			    ret								;returns to main procedure
+ 00000175			CancelSelection ENDP
+
+
+				;---------------------------------------------------------------------
+ 00000175			GetSeatIndex PROC USES eax ebx edx,
+					rowSize:DWORD,
+					movieSize:DWORD,
+					invalidPtr:PTR BYTE
+				;
+				; This is a helper procedure for the make and remove reservations
+				; procedures.
+				; Receives: EAX = movie and time slot
+				;			EBX = size of prompt
+				;			EDX = prompt for either make or remove reservation
+				; Returns:	ESI = index of input seat
+				;---------------------------------------------------------------------
+ 00000175  55		   *	    push   ebp
+ 00000176  8B EC	   *	    mov    ebp, esp
+ 00000178  50		   *	    push   eax
+ 00000179  53		   *	    push   ebx
+ 0000017A  52		   *	    push   edx
+ 0000017B  50				push	eax
+ 0000017C  E8 00000000 E		call	WriteString
+ 00000181  B8 00000000			mov		eax, 0
+ 00000186  E8 00000000 E		call	ReadChar
+ 0000018B  E8 00000000 E		call	WriteChar
+ 00000190  2C 41			sub		al, 'A'
+ 00000192  66| 98			cbw
+ 00000194  E8 00000000 E		call	Crlf
+
+ 00000199  3C 05			cmp		al, 5
+ 0000019B  72 0F			jb		L1
+ 0000019D  8B 55 10				mov		edx, invalidPtr
+ 000001A0  E8 00000000 E			call	WriteString
+ 000001A5  BE FFFFFFFF				mov		esi, -1
+ 000001AA  EB 3D				jmp		L3
+ 000001AC				L1:
+
+ 000001AC  50				push	eax
+ 000001AD  03 D3			add		edx, ebx
+ 000001AF  E8 00000000 E		call	WriteString
+ 000001B4  B8 00000000			mov		eax, 0
+ 000001B9  E8 00000000 E		call	ReadDec
+ 000001BE  48				dec		eax
+
+ 000001BF  83 F8 0A			cmp		eax, 10
+ 000001C2  72 0F			jb		L2
+ 000001C4  8B 55 10				mov		edx, invalidPtr
+ 000001C7  E8 00000000 E			call	WriteString
+ 000001CC  BE FFFFFFFF				mov		esi, -1
+ 000001D1  EB 16				jmp		L3
+ 000001D3				L2:
+					
+ 000001D3  8B D8			mov		ebx, eax
+ 000001D5  58				pop		eax
+
+ 000001D6  F7 65 08			mul		rowSize
+ 000001D9  03 C3			add		eax, ebx
+
+ 000001DB  BE 0000032F R		mov		esi, OFFSET reservationsTable
+ 000001E0  03 F0			add		esi, eax
+ 000001E2  58				pop		eax
+ 000001E3  48				dec		eax
+ 000001E4  F7 65 0C			mul		movieSize
+ 000001E7  03 F0			add		esi, eax
+
+ 000001E9				L3:
+					ret
+ 000001E9  5A		   *	    pop    edx
+ 000001EA  5B		   *	    pop    ebx
+ 000001EB  58		   *	    pop    eax
+ 000001EC  C9		   *	    leave  
+ 000001ED  C2 000C	   *	    ret    0000Ch
+ 000001F0			GetSeatIndex ENDP
+
+				END main
+Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 14:26:21
+Team1_Final_Reservations.asm				     Symbols 2 - 1
 
 
 
@@ -321,14 +670,15 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00000266 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000065 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 000003F7 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000001F0 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
 
                 N a m e                 Type     Value    Attr
 
+CancelSelection  . . . . . . . .	P Near	 00000165 _TEXT	Length= 00000010 Public STDCALL
 CloseFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Clrscr . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -358,7 +708,13 @@ GetMaxXY . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 GetMseconds  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 GetNumberOfConsoleInputEvents  .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 GetProcessHeap . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-GetSeatIndex . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetSeatIndex . . . . . . . . . .	P Near	 00000175 _TEXT	Length= 0000007B Public STDCALL
+  rowSize  . . . . . . . . . . .	DWord	 bp + 00000008
+  movieSize  . . . . . . . . . .	DWord	 bp + 0000000C
+  invalidPtr . . . . . . . . . .	DWord	 bp + 00000010
+  L1 . . . . . . . . . . . . . .	L Near	 000001AC _TEXT	
+  L2 . . . . . . . . . . . . . .	L Near	 000001D3 _TEXT	
+  L3 . . . . . . . . . . . . . .	L Near	 000001E9 _TEXT	
 GetStdHandle . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 GetSystemTime  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 GetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -371,7 +727,7 @@ HeapFree . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 HeapSize . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 IsDigit  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 LocalFree  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-MainMenu . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000030 Public STDCALL
+MainMenu . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 MakeReservation  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 MessageBoxA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 MsgBoxAsk  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -396,6 +752,13 @@ ReadKeyFlush . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ReadKey  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 RemoveReservation  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SelAdd . . . . . . . . . . . . .	P Near	 0000010F _TEXT	Length= 00000015 Public STDCALL
+SelRem . . . . . . . . . . . . .	P Near	 00000124 _TEXT	Length= 00000015 Public STDCALL
+SelectAdd  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SelectMovie1Time1  . . . . . . .	P Near	 00000139 _TEXT	Length= 0000000B Public STDCALL
+SelectMovie1Time2  . . . . . . .	P Near	 00000144 _TEXT	Length= 0000000B Public STDCALL
+SelectMovie2Time1  . . . . . . .	P Near	 0000014F _TEXT	Length= 0000000B Public STDCALL
+SelectMovie2Time2  . . . . . . .	P Near	 0000015A _TEXT	Length= 0000000B Public STDCALL
 SetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 SetConsoleCursorPosition . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 SetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -407,7 +770,7 @@ SetFilePointer . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 SetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 SetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ShowFPUStack . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-ShowingsMenu . . . . . . . . . .	P Near	 00000030 _TEXT	Length= 00000035 Public STDCALL
+ShowingsMenu . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Sleep  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 StrLength  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Str_compare  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -434,6 +797,19 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000010F Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 00000000 _TEXT	
+  IS1  . . . . . . . . . . . . .	L Near	 0000002B _TEXT	
+  L2 . . . . . . . . . . . . . .	L Near	 0000003C _TEXT	
+  L3 . . . . . . . . . . . . . .	L Near	 0000004C _TEXT	
+  L4 . . . . . . . . . . . . . .	L Near	 00000054 _TEXT	
+  L5 . . . . . . . . . . . . . .	L Near	 0000008B _TEXT	
+  L6 . . . . . . . . . . . . . .	L Near	 00000099 _TEXT	
+  L7 . . . . . . . . . . . . . .	L Near	 000000A1 _TEXT	
+  L8 . . . . . . . . . . . . . .	L Near	 000000BA _TEXT	
+  L9 . . . . . . . . . . . . . .	L Near	 000000E5 _TEXT	
+  L10  . . . . . . . . . . . . .	L Near	 000000F9 _TEXT	
+  L11  . . . . . . . . . . . . .	L Near	 00000103 _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
@@ -457,7 +833,8 @@ CAPSLOCK_ON  . . . . . . . . . .	Number	 00000080h
 CREATE_ALWAYS  . . . . . . . . .	Number	 00000002h   
 CREATE_NEW . . . . . . . . . . .	Number	 00000001h   
 CTRL_MASK  . . . . . . . . . . .	Number	 0000000Ch   
-Cancel . . . . . . . . . . . . .	Byte	 0000025A _DATA	
+CountEntries1  . . . . . . . . .	Number	 00000002h   
+CountEntries2  . . . . . . . . .	Number	 00000005h   
 CreateFile . . . . . . . . . . .	Text   	 CreateFileA
 DO_NOT_SHARE . . . . . . . . . .	Number	 00000000h   
 ENABLE_ECHO_INPUT  . . . . . . .	Number	 00000004h   
@@ -468,6 +845,8 @@ ENABLE_PROCESSED_OUTPUT  . . . .	Number	 00000001h
 ENABLE_WINDOW_INPUT  . . . . . .	Number	 00000008h   
 ENABLE_WRAP_AT_EOL_OUTPUT  . . .	Number	 00000002h   
 ENHANCED_KEY . . . . . . . . . .	Number	 00000100h   
+EntrySize1 . . . . . . . . . . .	Number	 00000005h   
+EntrySize2 . . . . . . . . . . .	Number	 00000005h   
 FALSE  . . . . . . . . . . . . .	Number	 00000000h   
 FILE_APPEND_DATA . . . . . . . .	Number	 00000004h   
 FILE_ATTRIBUTE_ARCHIVE . . . . .	Number	 00000020h   
@@ -553,30 +932,40 @@ MB_YESNO . . . . . . . . . . . .	Number	 00000004h
 MENU_EVENT . . . . . . . . . . .	Number	 00000008h   
 MOUSE_EVENT  . . . . . . . . . .	Number	 00000002h   
 MessageBox . . . . . . . . . . .	Text   	 MessageBoxA
+MovieGapValue  . . . . . . . . .	Number	 00000032h   
 NULL . . . . . . . . . . . . . .	Number	 00000000h   
 NUMLOCK_ON . . . . . . . . . . .	Number	 00000020h   
 OPEN_ALWAYS  . . . . . . . . . .	Number	 00000004h   
 OPEN_EXISTING  . . . . . . . . .	Number	 00000003h   
+OptionTable1 . . . . . . . . . .	Byte	 0000019B _DATA	
+OptionTable2 . . . . . . . . . .	Byte	 000001A5 _DATA	
 PeekConsoleInput . . . . . . . .	Text   	 PeekConsoleInputA
 RIGHT_ALT_PRESSED  . . . . . . .	Number	 00000001h   
 RIGHT_CTRL_PRESSED . . . . . . .	Number	 00000004h   
 ReadConsoleInput . . . . . . . .	Text   	 ReadConsoleInputA
 ReadConsole  . . . . . . . . . .	Text   	 ReadConsoleA
+RowGapValue  . . . . . . . . . .	Number	 0000000Ah   
 SCROLLLOCK_ON  . . . . . . . . .	Number	 00000040h   
 SHIFT_MASK . . . . . . . . . . .	Number	 00000010h   
 SHIFT_PRESSED  . . . . . . . . .	Number	 00000010h   
 STD_ERROR_HANDLE . . . . . . . .	Number	 -0000000Ch   
 STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
 STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
-Select1  . . . . . . . . . . . .	Byte	 000001EE _DATA	
-Select2  . . . . . . . . . . . .	Byte	 00000209 _DATA	
-Select3  . . . . . . . . . . . .	Byte	 00000224 _DATA	
-Select4  . . . . . . . . . . . .	Byte	 0000023F _DATA	
-SelectAdd  . . . . . . . . . . .	Byte	 0000019B _DATA	
-SelectDone . . . . . . . . . . .	Byte	 000001C9 _DATA	
-SelectRem  . . . . . . . . . . .	Byte	 000001B1 _DATA	
+Select1  . . . . . . . . . . . .	Byte	 000001BE _DATA	
+Select2  . . . . . . . . . . . .	Byte	 000001D9 _DATA	
+Select3  . . . . . . . . . . . .	Byte	 000001F4 _DATA	
+Select4  . . . . . . . . . . . .	Byte	 0000020F _DATA	
+Select5  . . . . . . . . . . . .	Byte	 0000022A _DATA	
+SelectCancel . . . . . . . . . .	Byte	 00000305 _DATA	
+SelectInvalid  . . . . . . . . .	Byte	 0000031B _DATA	
 SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
-StringAddOrRem . . . . . . . . .	Byte	 000001DB _DATA	
+String1  . . . . . . . . . . . .	Byte	 00000291 _DATA	
+String2  . . . . . . . . . . . .	Byte	 000002AE _DATA	
+String3  . . . . . . . . . . . .	Byte	 000002CB _DATA	
+String4  . . . . . . . . . . . .	Byte	 000002E8 _DATA	
+StringAdd  . . . . . . . . . . .	Byte	 00000257 _DATA	
+StringChoice1  . . . . . . . . .	Byte	 00000236 _DATA	
+StringRem  . . . . . . . . . . .	Byte	 00000273 _DATA	
 TAB  . . . . . . . . . . . . . .	Number	 00000009h   
 TRUE . . . . . . . . . . . . . .	Number	 00000001h   
 TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
@@ -684,6 +1073,7 @@ removeColPrompt  . . . . . . . .	Byte	 000000CD _DATA
 removeRowPrompt  . . . . . . . .	Byte	 00000086 _DATA	
 removeSeatFailed . . . . . . . .	Byte	 00000172 _DATA	
 removeSeatSuccess  . . . . . . .	Byte	 0000014D _DATA	
+reservationsTable  . . . . . . .	Byte	 0000032F _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   
