@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/02/20 14:16:34
+Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/02/20 17:23:22
 Team1_Final_Reservations.asm				     Page 1 - 1
 
 
@@ -13,7 +13,10 @@ Team1_Final_Reservations.asm				     Page 1 - 1
 				;						have more in final version when all parts
 				;						are merged.
 
-				INCLUDE Irvine32.inc
+				INCLUDE Team1Final.inc
+			      C ; Include File for Team1_Final_Reservations.asm
+			      C 
+			      C INCLUDE Irvine32.inc
 			      C ; Include file for Irvine32.lib             (Irvine32.inc)
 			      C 
 			      C ;OPTION CASEMAP:NONE		; optional: make identifiers case-sensitive
@@ -30,6 +33,7 @@ Team1_Final_Reservations.asm				     Page 1 - 1
 			      C 
 			      C .NOLIST
 			      C .LIST
+			      C 
 			      C 
 					
 				MakeReservation PROTO,
@@ -700,7 +704,7 @@ Team1_Final_Reservations.asm				     Page 1 - 1
  000002CB			GetSeatIndex ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/02/20 14:16:34
+Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/02/20 17:23:22
 Team1_Final_Reservations.asm				     Symbols 2 - 1
 
 

@@ -9,7 +9,7 @@
 ;						have more in final version when all parts
 ;						are merged.
 
-INCLUDE Irvine32.inc
+INCLUDE Team1Final.inc
 	
 MakeReservation PROTO,
 	rowSize:DWORD,
