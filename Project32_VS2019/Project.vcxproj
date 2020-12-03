@@ -12,6 +12,10 @@
   </ItemGroup>
   <ItemGroup>
     <MASM Include="Team1_Final_Reservations.asm" />
+    <MASM Include="_EditReservation.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Team1Final.inc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4164AA65-1EF9-4E69-899B-D1BED776070B}</ProjectGuid>
