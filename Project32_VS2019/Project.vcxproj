@@ -13,6 +13,7 @@
   <ItemGroup>
     <MASM Include="Team1_Final_Reservations.asm" />
     <MASM Include="_EditReservation.asm" />
+    <MASM Include="_Menu.asm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Team1Final.inc" />

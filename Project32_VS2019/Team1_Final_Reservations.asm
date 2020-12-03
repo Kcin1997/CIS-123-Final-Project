@@ -107,6 +107,7 @@ main PROC
 
 		mov		edx, OFFSET StringAddOrRem	;StringAddOrRem used for output
 		call	WriteString					;Writes the StringAddOrRem to output
+
 		call	ReadChar					;Asks for user input
 		call	WriteChar					;Display user input
 		call	Crlf						;new line
