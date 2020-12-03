@@ -17,6 +17,10 @@ GetSeatIndex PROTO,
 	movieSize:DWORD,
 	invalidPTR:PTR BYTE
 
+MainMenu PROTO
+
+ShowingsMenu PROTO
+
 .data
 ;--------------------------------------------------------------------------------------
 ;Strings for reservation making and clarification.

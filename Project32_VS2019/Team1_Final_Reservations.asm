@@ -47,13 +47,8 @@ Select4 BYTE "4. Movie 2. Time: 6:30PM", 0dh, 0ah, 0
 Select5 BYTE "5. Cancel", 0dh, 0ah, 0
 StringChoice1 BYTE "Select a movie and time option: ", 0
 
-SelectAdd BYTE "1. Make Reservation", 0dh, 0ah, 0
-SelectRem BYTE "2. Remove Reservation", 0dh, 0ah, 0
-SelectDone BYTE "3. Exit Program", 0dh, 0ah, 0
 StringAdd BYTE "Make Reservation Selected", 0dh, 0ah, 0
 StringRem BYTE "Remove Reservation Selected", 0dh, 0ah, 0
-StringAddOrRem BYTE "Select an option: ", 0
-
 ;--------------------------------------------------------------------------------------
 ;Strings displayed after selection made
 ;--------------------------------------------------------------------------------------
@@ -97,16 +92,7 @@ main PROC
 ;Displays the menu choices and asks the user to select an option
 ;--------------------------------------------------------------------------------------
 	L1:
-		call	Clrscr
-		mov		edx, OFFSET SelectAdd		;StringAdd used for output
-		call	WriteString					;Writes the StringAdd to output
-		mov		edx, OFFSET SelectRem		;StringRem used for output
-		call	WriteString					;Writes the StringRem to output
-		mov		edx, OFFSET SelectDone		;SelectDone used for output
-		call	WriteString					;Writes the SelectDone to output
-
-		mov		edx, OFFSET StringAddOrRem	;StringAddOrRem used for output
-		call	WriteString					;Writes the StringAddOrRem to output
+		INVOKE MainMenu
 
 		call	ReadChar					;Asks for user input
 		call	WriteChar					;Display user input
@@ -143,16 +129,7 @@ main PROC
 		je		L11
 		push	eax
 
-		mov		edx, OFFSET Select1			;String1 used for output
-		call	WriteString					;Writes the String1 to output
-		mov		edx, OFFSET Select2			;String2 used for output
-		call	WriteString					;Writes the String2 to output
-		mov		edx, OFFSET Select3			;String3 used for output
-		call	WriteString					;Writes the String3 to output
-		mov		edx, OFFSET Select4			;String4 used for output
-		call	WriteString					;Writes the String4 to output
-		mov		edx, OFFSET SelectCancel	;StringGoodbye used for output
-		call	WriteString					;Writes SelectCancel to output
+		INVOKE ShowingsMenu
 
 		mov		edx, OFFSET StringChoice1	;StringChoice1 used for output
 		call	WriteString					;Writes the StringChoice1 to output

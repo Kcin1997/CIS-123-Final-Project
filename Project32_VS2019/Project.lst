@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 13:35:45
+Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 13:51:37
 _Menu.asm						     Page 1 - 1
 
 
@@ -40,6 +40,10 @@ _Menu.asm						     Page 1 - 1
 			      C 	rowSize:DWORD,
 			      C 	movieSize:DWORD,
 			      C 	invalidPTR:PTR BYTE
+			      C 
+			      C MainMenu PROTO
+			      C 
+			      C ShowingsMenu PROTO
 			      C 
  00000000		      C .data
 			      C ;--------------------------------------------------------------------------------------
@@ -133,8 +137,97 @@ _Menu.asm						     Page 1 - 1
 	   00
 			      C 
 
+ 0000019B			.data
+				;------------------------------------------------
+				; Main Menu Strings
+				;------------------------------------------------
+ 0000019B 31 2E 20 4D 61	SelectAdd BYTE "1. Make Reservation", 0dh, 0ah, 0
+	   6B 65 20 52 65
+	   73 65 72 76 61
+	   74 69 6F 6E 0D
+	   0A 00
+ 000001B1 32 2E 20 52 65	SelectRem BYTE "2. Remove Reservation", 0dh, 0ah, 0
+	   6D 6F 76 65 20
+	   52 65 73 65 72
+	   76 61 74 69 6F
+	   6E 0D 0A 00
+ 000001C9 33 2E 20 45 78	SelectDone BYTE "3. Exit Program", 0dh, 0ah, 0
+	   69 74 20 50 72
+	   6F 67 72 61 6D
+	   0D 0A 00
+ 000001DB 53 65 6C 65 63	StringAddOrRem BYTE "Select an option: ", 0
+	   74 20 61 6E 20
+	   6F 70 74 69 6F
+	   6E 3A 20 00
+
+				;------------------------------------------------------------
+				; Showings Menu Strings
+				;------------------------------------------------------------
+ 000001EE 31 2E 20 4D 6F	Select1 BYTE "1. Movie 1. Time: 2:15PM", 0dh, 0ah, 0
+	   76 69 65 20 31
+	   2E 20 54 69 6D
+	   65 3A 20 32 3A
+	   31 35 50 4D 0D
+	   0A 00
+ 00000209 32 2E 20 4D 6F	Select2 BYTE "2. Movie 1. Time: 6:30PM", 0dh, 0ah, 0
+	   76 69 65 20 31
+	   2E 20 54 69 6D
+	   65 3A 20 36 3A
+	   33 30 50 4D 0D
+	   0A 00
+ 00000224 33 2E 20 4D 6F	Select3 BYTE "3. Movie 2. Time: 2:15PM", 0dh, 0ah, 0
+	   76 69 65 20 32
+	   2E 20 54 69 6D
+	   65 3A 20 32 3A
+	   31 35 50 4D 0D
+	   0A 00
+ 0000023F 34 2E 20 4D 6F	Select4 BYTE "4. Movie 2. Time: 6:30PM", 0dh, 0ah, 0
+	   76 69 65 20 32
+	   2E 20 54 69 6D
+	   65 3A 20 36 3A
+	   33 30 50 4D 0D
+	   0A 00
+ 0000025A 35 2E 20 43 61	Cancel BYTE "5. Cancel", 0dh, 0ah, 0
+	   6E 63 65 6C 0D
+	   0A 00
+
+ 00000000			.code
+				;------------------------------------------------------------
+ 00000000			MainMenu PROC
+				;------------------------------------------------------------
+ 00000000  60				pusha
+ 00000001  E8 00000000 E		call	Clrscr
+ 00000006  BA 0000019B R		mov		edx, OFFSET SelectAdd		;StringAdd used for output
+ 0000000B  E8 00000000 E		call	WriteString					;Writes the StringAdd to output
+ 00000010  BA 000001B1 R		mov		edx, OFFSET SelectRem		;StringRem used for output
+ 00000015  E8 00000000 E		call	WriteString					;Writes the StringRem to output
+ 0000001A  BA 000001C9 R		mov		edx, OFFSET SelectDone		;SelectDone used for output
+ 0000001F  E8 00000000 E		call	WriteString					;Writes the SelectDone to output
+
+ 00000024  BA 000001DB R		mov		edx, OFFSET StringAddOrRem	;StringAddOrRem used for output
+ 00000029  E8 00000000 E		call	WriteString					;Writes the StringAddOrRem to output
+ 0000002E  61				popa
+ 0000002F  C3				ret
+ 00000030			MainMenu ENDP
+
+ 00000030			ShowingsMenu PROC
+ 00000030  60				pusha
+ 00000031  BA 000001EE R		mov		edx, OFFSET Select1			;String1 used for output
+ 00000036  E8 00000000 E		call	WriteString					;Writes the String1 to output
+ 0000003B  BA 00000209 R		mov		edx, OFFSET Select2			;String2 used for output
+ 00000040  E8 00000000 E		call	WriteString					;Writes the String2 to output
+ 00000045  BA 00000224 R		mov		edx, OFFSET Select3			;String3 used for output
+ 0000004A  E8 00000000 E		call	WriteString					;Writes the String3 to output
+ 0000004F  BA 0000023F R		mov		edx, OFFSET Select4			;String4 used for output
+ 00000054  E8 00000000 E		call	WriteString					;Writes the String4 to output
+ 00000059  BA 0000025A R		mov		edx, OFFSET Cancel			;Cancel used for output
+ 0000005E  E8 00000000 E		call	WriteString					;Writes SelectCancel to output
+ 00000063  61				popa
+ 00000064  C3				ret
+ 00000065			ShowingsMenu ENDP
+
 				END
-Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 13:35:45
+Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 13:51:37
 _Menu.asm						     Symbols 2 - 1
 
 
@@ -228,8 +321,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 0000019B Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000266 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000065 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -278,6 +371,7 @@ HeapFree . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 HeapSize . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 IsDigit  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 LocalFree  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MainMenu . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000030 Public STDCALL
 MakeReservation  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 MessageBoxA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 MsgBoxAsk  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -313,6 +407,7 @@ SetFilePointer . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 SetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 SetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ShowFPUStack . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ShowingsMenu . . . . . . . . . .	P Near	 00000030 _TEXT	Length= 00000035 Public STDCALL
 Sleep  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 StrLength  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Str_compare  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -362,6 +457,7 @@ CAPSLOCK_ON  . . . . . . . . . .	Number	 00000080h
 CREATE_ALWAYS  . . . . . . . . .	Number	 00000002h   
 CREATE_NEW . . . . . . . . . . .	Number	 00000001h   
 CTRL_MASK  . . . . . . . . . . .	Number	 0000000Ch   
+Cancel . . . . . . . . . . . . .	Byte	 0000025A _DATA	
 CreateFile . . . . . . . . . . .	Text   	 CreateFileA
 DO_NOT_SHARE . . . . . . . . . .	Number	 00000000h   
 ENABLE_ECHO_INPUT  . . . . . . .	Number	 00000004h   
@@ -472,7 +568,15 @@ SHIFT_PRESSED  . . . . . . . . .	Number	 00000010h
 STD_ERROR_HANDLE . . . . . . . .	Number	 -0000000Ch   
 STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
 STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
+Select1  . . . . . . . . . . . .	Byte	 000001EE _DATA	
+Select2  . . . . . . . . . . . .	Byte	 00000209 _DATA	
+Select3  . . . . . . . . . . . .	Byte	 00000224 _DATA	
+Select4  . . . . . . . . . . . .	Byte	 0000023F _DATA	
+SelectAdd  . . . . . . . . . . .	Byte	 0000019B _DATA	
+SelectDone . . . . . . . . . . .	Byte	 000001C9 _DATA	
+SelectRem  . . . . . . . . . . .	Byte	 000001B1 _DATA	
 SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
+StringAddOrRem . . . . . . . . .	Byte	 000001DB _DATA	
 TAB  . . . . . . . . . . . . . .	Number	 00000009h   
 TRUE . . . . . . . . . . . . . .	Number	 00000001h   
 TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
