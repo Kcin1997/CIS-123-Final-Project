@@ -13,15 +13,18 @@ INCLUDE Irvine32.inc
 	
 MakeReservation PROTO,
 	rowSize:DWORD,
-	movieSize:DWORD
+	movieSize:DWORD,
+	invalidPTR:PTR BYTE
 
 RemoveReservation PROTO,
 	rowSize:DWORD,
-	movieSize:DWORD
+	movieSize:DWORD,
+	invalidPTR:PTR BYTE
 
 GetSeatIndex PROTO,
 	rowSize:DWORD,
-	movieSize:DWORD
+	movieSize:DWORD,
+	invalidPTR:PTR BYTE
 
 .data
 ;--------------------------------------------------------------------------------------
@@ -59,9 +62,9 @@ Select4 BYTE "4. Movie 2. Time: 6:30PM", 0dh, 0ah, 0
 Select5 BYTE "5. Cancel", 0dh, 0ah, 0
 StringChoice1 BYTE "Select a movie and time option: ", 0
 
-SelectAdd BYTE "1. Make Reservation", 0dh,0ah,0
-SelectRem BYTE "2. Remove Reservation", 0dh,0ah,0
-SelectDone BYTE "3. Exit Program", 0dh,0ah,0
+SelectAdd BYTE "1. Make Reservation", 0dh, 0ah, 0
+SelectRem BYTE "2. Remove Reservation", 0dh, 0ah, 0
+SelectDone BYTE "3. Exit Program", 0dh, 0ah, 0
 StringAdd BYTE "Make Reservation Selected", 0dh, 0ah, 0
 StringRem BYTE "Remove Reservation Selected", 0dh, 0ah, 0
 StringAddOrRem BYTE "Select an option: ", 0
@@ -69,38 +72,50 @@ StringAddOrRem BYTE "Select an option: ", 0
 ;--------------------------------------------------------------------------------------
 ;Strings displayed after selection made
 ;--------------------------------------------------------------------------------------
-String1 BYTE "Movie 1 at 2:15PM selected", 0
-String2 BYTE "Movie 1 at 6:30PM selected", 0
-String3 BYTE "Movie 2 at 2:15PM selected", 0
-String4	BYTE "Movie 2 at 6:30PM selected", 0
-String5	BYTE "Selection cancelled", 0
-String6 BYTE "Invalid selection", 0
+String1 BYTE "Movie 1 at 2:15PM selected", 0dh, 0ah, 0
+String2 BYTE "Movie 1 at 6:30PM selected", 0dh, 0ah, 0
+String3 BYTE "Movie 2 at 2:15PM selected", 0dh, 0ah, 0
+String4	BYTE "Movie 2 at 6:30PM selected", 0dh, 0ah, 0
+String5	BYTE "Selection cancelled", 0dh, 0ah, 0
+String6 BYTE "Invalid selection", 0dh, 0ah, 0
 	
 ;--------------------------------------------------------------------------------------
 ;3d array for reservations.
 ;--------------------------------------------------------------------------------------
-reservationsTable	BYTE 16 DUP(0)
+reservationsTable	BYTE 10 DUP(0)
 RowGapValue = ($ - reservationsTable)
-					BYTE 16 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
 MovieGapValue = ($ - reservationsTable)
-					BYTE 16 DUP(0)
-					BYTE 16 DUP(0)
-					BYTE 16 DUP(0)
-					BYTE 16 DUP(0)
-					BYTE 16 DUP(0)
-					BYTE 16 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
+					BYTE 10 DUP(0)
 
 ;--------------------------------------------------------------------------------------
 ;Strings for reservation making and clarification.
 ;--------------------------------------------------------------------------------------
-	makeRowPrompt		BYTE "Enter the row for the seat reservation that you wish to make (A-B): ", 0
-	makeColPrompt		BYTE "Enter the seat number reservation that you wish to make (1-16): ", 0
-	removeRowPrompt		BYTE "Enter the row for the seat reservation that you wish to remove (A-B): ", 0
-	removeColPrompt		BYTE "Enter the seat number reservation that you wish to remove (1-16): ", 0
-	makeSeatSuccess		BYTE "Your seat has been reserved.", 0
-	makeSeatFailed		BYTE "That seat is already taken.", 0
-	removeSeatSuccess	BYTE "Your reservation has been removed.", 0
-	removeSeatFailed	BYTE "That seat does not have a reservation.", 0
+	makeRowPrompt		BYTE "Enter the row for the seat reservation that you wish to make (A-E): ", 0
+	makeColPrompt		BYTE "Enter the seat number reservation that you wish to make (1-10): ", 0
+	removeRowPrompt		BYTE "Enter the row for the seat reservation that you wish to remove (A-E): ", 0
+	removeColPrompt		BYTE "Enter the seat number reservation that you wish to remove (1-10): ", 0
+	makeSeatSuccess		BYTE "Your seat has been reserved.", 0dh, 0ah, 0
+	makeSeatFailed		BYTE "That seat is already taken.", 0dh, 0ah, 0
+	removeSeatSuccess	BYTE "Your reservation has been removed.", 0dh, 0ah, 0
+	removeSeatFailed	BYTE "That seat does not have a reservation.", 0dh, 0ah, 0
 
 .code
 main PROC
@@ -121,6 +136,16 @@ main PROC
 		call	ReadChar					;Asks for user input
 		call	WriteChar					;Display user input
 		call	Crlf						;new line
+		
+		sub		al, '1'
+		cmp		al, 3
+		jb		IS1
+			mov		edx, OFFSET String6
+			call	WriteString
+			call	WaitMsg
+			jmp		L1
+		IS1:
+		add		al, '1'
 
 		mov		esi, OFFSET OptionTable1	;point esi to the table1 address
 		mov		ecx, CountEntries1			;
@@ -163,8 +188,6 @@ main PROC
 
 		mov		esi, OFFSET OptionTable2	;point esi to the table2 address
 		mov		ecx, CountEntries2			;count of table entries or loop counter
-		call	Crlf						;new line
-		call	Clrscr						;
 
 		L5:
 			cmp		al, [esi]					;compares characters in table to al
@@ -181,9 +204,11 @@ main PROC
 		jne		L8
 			mov		edx, OFFSET String6
 			call	WriteString
+			call	WaitMsg
 			jmp		L1
 		L8:
-	
+		call	Clrscr
+
 		sub		al, '0'
 		cbw
 		cmp		eax, 4
@@ -195,10 +220,10 @@ main PROC
 
 		cmp		cl, '1'
 		jne		L9
-			invoke	MakeReservation, RowGapValue, MovieGapValue
+			invoke	MakeReservation, RowGapValue, MovieGapValue, ADDR String6
 			jmp		L10
 		L9:
-			invoke	RemoveReservation, RowGapValue, MovieGapValue
+			invoke	RemoveReservation, RowGapValue, MovieGapValue, ADDR String6
 		L10:
 		call	WaitMsg
 	jmp L1
@@ -275,7 +300,8 @@ CancelSelection ENDP
 ;---------------------------------------------------------------------
 MakeReservation PROC USES ebx edx esi,
 	rowSize:DWORD,
-	movieSize:DWORD
+	movieSize:DWORD,
+	invalidPtr:PTR BYTE
 ;
 ; This procedure reads input from user to determine if their seat
 ; reservation is already taken. If not, assign them that seat, and
@@ -285,7 +311,9 @@ MakeReservation PROC USES ebx edx esi,
 ;			EDX = prompt for make reservation
 ; Returns:	AL = 1, if the seat has been reserved
 ;---------------------------------------------------------------------
-	invoke	GetSeatIndex, rowSize, movieSize
+	invoke	GetSeatIndex, rowSize, movieSize, invalidPtr
+	cmp		esi, -1
+	je		L3
 
 	mov		al, [esi]
 	cmp		al, 0
@@ -301,14 +329,16 @@ MakeReservation PROC USES ebx edx esi,
 
 	call	WriteString
 	call	Crlf
-	call	Crlf
+
+	L3:
 	ret
 MakeReservation ENDP
 
 ;---------------------------------------------------------------------
 RemoveReservation PROC USES ebx edx esi,
 	rowSize:DWORD,
-	movieSize:DWORD
+	movieSize:DWORD,
+	invalidPtr:PTR BYTE
 ;
 ; This procedure reads input from the user to determine if a seat
 ; is indeed reserved in order to be able to remove the seat
@@ -318,7 +348,9 @@ RemoveReservation PROC USES ebx edx esi,
 ;			EDX = prompt for remove reservation
 ; Returns:	AL = 1, if reservation was removed
 ;---------------------------------------------------------------------
-	invoke	GetSeatIndex, rowSize, movieSize
+	invoke	GetSeatIndex, rowSize, movieSize, invalidPtr
+	cmp		esi, -1
+	je		L3
 
 	mov		al, [esi]
 	cmp		al, 0
@@ -334,14 +366,16 @@ RemoveReservation PROC USES ebx edx esi,
 
 	call	WriteString
 	call	Crlf
-	call	Crlf
+
+	L3:
 	ret
 RemoveReservation ENDP
 
 ;---------------------------------------------------------------------
 GetSeatIndex PROC USES eax ebx edx,
 	rowSize:DWORD,
-	movieSize:DWORD
+	movieSize:DWORD,
+	invalidPtr:PTR BYTE
 ;
 ; This is a helper procedure for the make and remove reservations
 ; procedures.
@@ -359,12 +393,28 @@ GetSeatIndex PROC USES eax ebx edx,
 	cbw
 	call	Crlf
 
+	cmp		al, 5
+	jb		L1
+		mov		edx, invalidPtr
+		call	WriteString
+		mov		esi, -1
+		jmp		L3
+	L1:
+
 	push	eax
 	add		edx, ebx
 	call	WriteString
 	mov		eax, 0
 	call	ReadDec
 	dec		eax
+
+	cmp		eax, 10
+	jb		L2
+		mov		edx, invalidPtr
+		call	WriteString
+		mov		esi, -1
+		jmp		L3
+	L2:
 	
 	mov		ebx, eax
 	pop		eax
@@ -379,6 +429,7 @@ GetSeatIndex PROC USES eax ebx edx,
 	mul		movieSize
 	add		esi, eax
 
+	L3:
 	ret
 GetSeatIndex ENDP
 
