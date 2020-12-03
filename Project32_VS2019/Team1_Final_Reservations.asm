@@ -61,8 +61,8 @@ String1 BYTE "Movie 1 at 2:15PM selected", 0dh, 0ah, 0
 String2 BYTE "Movie 1 at 6:30PM selected", 0dh, 0ah, 0
 String3 BYTE "Movie 2 at 2:15PM selected", 0dh, 0ah, 0
 String4	BYTE "Movie 2 at 6:30PM selected", 0dh, 0ah, 0
-String5	BYTE "Selection cancelled", 0dh, 0ah, 0
-String6 BYTE "Invalid selection", 0dh, 0ah, 0
+SelectCancel	BYTE "Selection cancelled", 0dh, 0ah, 0
+SelectInvalid BYTE "Invalid selection", 0dh, 0ah, 0
 	
 ;--------------------------------------------------------------------------------------
 ;3d array for reservations.
@@ -114,7 +114,7 @@ main PROC
 		sub		al, '1'
 		cmp		al, 3
 		jb		IS1
-			mov		edx, OFFSET String6
+			mov		edx, OFFSET SelectInvalid
 			call	WriteString
 			call	WaitMsg
 			jmp		L1
@@ -150,8 +150,8 @@ main PROC
 		call	WriteString					;Writes the String3 to output
 		mov		edx, OFFSET Select4			;String4 used for output
 		call	WriteString					;Writes the String4 to output
-		mov		edx, OFFSET Select5			;StringGoodbye used for output
-		call	WriteString					;Writes the String5 to output
+		mov		edx, OFFSET SelectCancel	;StringGoodbye used for output
+		call	WriteString					;Writes SelectCancel to output
 
 		mov		edx, OFFSET StringChoice1	;StringChoice1 used for output
 		call	WriteString					;Writes the StringChoice1 to output
@@ -176,7 +176,7 @@ main PROC
 
 		cmp		ecx, 0
 		jne		L8
-			mov		edx, OFFSET String6
+			mov		edx, OFFSET SelectInvalid
 			call	WriteString
 			call	WaitMsg
 			jmp		L1
@@ -194,10 +194,10 @@ main PROC
 
 		cmp		cl, '1'
 		jne		L9
-			invoke	MakeReservation, RowGapValue, MovieGapValue, ADDR String6
+			invoke	MakeReservation, RowGapValue, MovieGapValue, ADDR SelectInvalid
 			jmp		L10
 		L9:
-			invoke	RemoveReservation, RowGapValue, MovieGapValue, ADDR String6
+			invoke	RemoveReservation, RowGapValue, MovieGapValue, ADDR SelectInvalid
 		L10:
 		call	WaitMsg
 	jmp L1
@@ -266,7 +266,7 @@ SelectMovie2Time2 PROC
 SelectMovie2Time2 ENDP
 
 CancelSelection PROC
-    mov edx,OFFSET String5			;StringGoodbye used for output
+    mov edx,OFFSET SelectCancel			;StringGoodbye used for output
     call WriteString				;Writes the StringGoodbye to output
     ret								;returns to main procedure
 CancelSelection ENDP
